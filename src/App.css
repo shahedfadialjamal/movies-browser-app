@@ -1,0 +1,88 @@
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+h1 {
+  text-align: center;
+}
+input {
+  padding: 0;
+  margin-right: 10px;
+}
+container {
+  width: 1920;
+  height: 1080;
+  background-color: blue;
+}
+button {
+  padding: 8px 12px;
+}
+div {
+  margin-bottom: 10px;
+}
+.movie-card img {
+  width: 180px;
+  border-radius: 10px;
+}
+.movie-card button {
+  margin-top: 10px;
+  padding: 8px 15px;
+  background: crimson;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.movie-card button:hover {
+  background: darkred;
+}
+.navbar {
+  display: flex;
+  justify-self: space-between;
+  align-self: center;
+  padding: 20px 40px;
+  background: #111;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.navbar h1 {
+  color: #e50914;
+  margin: 0;
+}
+.navbar nav {
+  display: flex;
+  gap: 20;
+}
+.navbar a {
+  color: #f5f5f5;
+  text-decoration: overline;
+  font-weight: bold;
+  transition: 0.3s;
+}
+.navbar a:hover {
+  color: #e50914;
+}
+input {
+  background: #222;
+  color: #f5f5f5;
+  border: 1px solid #444;
+}
+input:focus {
+  border: 1px solid #e50914;
+  outline: none;
+}
+.hero {
+  height: 90px;
+  display: inline;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('...');
+  background-size: cover;
+  background-position: center;
+  color: #f5f5f5;
+}

@@ -1,0 +1,47 @@
+import { Routes, Route, Link } from 'react-router-dom';
+import { useState } from 'react';
+import MovieList from './components/Movies/MovieList.jsx';
+import SearchForm from './components/Search/SearchForm.jsx';
+import Favorites from './components/Favorites/Favorites.jsx';
+import MovieDetail from './components/Movies/MovieDetail.jsx';
+import InfiniteScrollPage from './components/Movies/InfiniteScroll.jsx';
+import ErrorBoundary from './components/Error/ErrorBoundary.jsx';
+import InfiniteVirtual from './components/Movies/InfiniteVirtual.jsx';
+function App() {
+  const [query, setQuery] = useState('');
+
+  return (
+    <div>
+      <header className="navbar">
+        <h1> Movie Browser</h1>
+        <nav>
+          <Link to="/">Home</Link>| <Link to="/favorites">Favorites</Link>
+          <Link to="/infinite">Infinite Scroll</Link>
+          <Link to="/virtual">Virtualization</Link>
+        </nav>
+      </header>
+      <ErrorBoundary>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <section className="hero">
+                  <h2> Unlimted Movies</h2>
+                </section>
+                <SearchForm onSearch={setQuery} />
+                <MovieList query={query} />
+              </>
+            }
+          />
+
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/movie/:movieId" element={<MovieDetail />} />
+          <Route path="/infinite" element={<InfiniteScrollPage />} />
+          <Route path="/virtual" element={<InfiniteVirtual />} />
+        </Routes>
+      </ErrorBoundary>
+    </div>
+  );
+}
+export default App;
