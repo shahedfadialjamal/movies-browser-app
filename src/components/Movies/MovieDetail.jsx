@@ -11,9 +11,6 @@ function MovieDetail() {
       .then((response) => {
         setMovie(response.data);
 
-        console.log('poster_path=', response.data.poster_path);
-        console.log('backdrop_path=', response.data.backdrop_path);
-
         setLoading(false);
       })
       .catch((error) => {
