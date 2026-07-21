@@ -3,7 +3,6 @@ import { getFavorites } from '../../favorites';
 import MovieCard from '../Movies/MovieCard';
 function Favorite() {
   const movies = useSelector((state) => state.favorites.favorites);
-  //console.log(movies)
   if (movies.length === 0) {
     return (
       <div>
