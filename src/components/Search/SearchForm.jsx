@@ -1,23 +1,30 @@
-import { useState } from 'react';
+import { use } from 'react';
+import { useState, useEffect } from 'react';
 function SearchForm({ onSearch }) {
   const [search, setSearch] = useState('');
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [debouncedSearch, setdebouncedSearch] = useState('');
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setdebouncedSearch(search);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+  useEffect(() => {
     if (onSearch) {
-      onSearch(search);
+      onSearch(debouncedSearch);
     }
-  };
+  }, [debouncedSearch]);
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <input
         type="text"
         placeholder="search movie"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <button type="submit">Search</button>
+
       <p>You Searched For: {search}</p>
-    </form>
+    </div>
   );
 }
 export default SearchForm;

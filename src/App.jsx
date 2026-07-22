@@ -1,4 +1,5 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import MovieList from './components/Movies/MovieList.jsx';
 import SearchForm from './components/Search/SearchForm.jsx';
@@ -9,7 +10,7 @@ import ErrorBoundary from './components/Error/ErrorBoundary.jsx';
 import InfiniteVirtual from './components/Movies/InfiniteVirtual.jsx';
 function App() {
   const [query, setQuery] = useState('');
-
+  const location = useLocation();
   return (
     <div>
       <header className="navbar">
@@ -21,25 +22,27 @@ function App() {
         </nav>
       </header>
       <ErrorBoundary>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <section className="hero">
-                  <h2> Unlimted Movies</h2>
-                </section>
-                <SearchForm onSearch={setQuery} />
-                <MovieList query={query} />
-              </>
-            }
-          />
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route
+              path="/"
+              element={
+                <>
+                  <section className="hero">
+                    <h2> Unlimted Movies</h2>
+                  </section>
+                  <SearchForm onSearch={setQuery} />
+                  <MovieList query={query} />
+                </>
+              }
+            />
 
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/movie/:movieId" element={<MovieDetail />} />
-          <Route path="/infinite" element={<InfiniteScrollPage />} />
-          <Route path="/virtual" element={<InfiniteVirtual />} />
-        </Routes>
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/movie/:movieId" element={<MovieDetail />} />
+            <Route path="/infinite" element={<InfiniteScrollPage />} />
+            <Route path="/virtual" element={<InfiniteVirtual />} />
+          </Routes>
+        </AnimatePresence>
       </ErrorBoundary>
     </div>
   );
