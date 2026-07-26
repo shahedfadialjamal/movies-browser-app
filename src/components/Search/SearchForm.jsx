@@ -1,21 +1,25 @@
-import { use } from 'react';
 import { useState, useEffect } from 'react';
+
 function SearchForm({ onSearch }) {
   const [search, setSearch] = useState('');
-  const [debouncedSearch, setdebouncedSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      setdebouncedSearch(search);
+      setDebouncedSearch(search);
     }, 500);
+
     return () => clearTimeout(timer);
   }, [search]);
+
   useEffect(() => {
     if (onSearch) {
       onSearch(debouncedSearch);
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, onSearch]);
+
   return (
-    <div>
+    <div className="search-container">
       <input
         type="text"
         placeholder="search movie"
@@ -27,4 +31,5 @@ function SearchForm({ onSearch }) {
     </div>
   );
 }
+
 export default SearchForm;

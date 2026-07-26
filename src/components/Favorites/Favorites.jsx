@@ -18,6 +18,7 @@ function Favorite() {
         gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         gap: '24px',
         padding: '24px',
+        placeItems: 'center',
       }}
     >
       {movies.map((movie) => (

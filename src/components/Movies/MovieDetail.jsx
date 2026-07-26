@@ -5,8 +5,11 @@ import { getMovieDetails } from '../../api';
 
 function MovieDetail() {
   const { movieId } = useParams();
+
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     getMovieDetails(movieId)
@@ -15,7 +18,7 @@ function MovieDetail() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error);
         setLoading(false);
       });
   }, [movieId]);
@@ -25,39 +28,130 @@ function MovieDetail() {
   }
 
   if (!movie) {
-    return <h2>Movie not found.</h2>;
+    return <h2>Movie not found</h2>;
   }
 
   return (
     <motion.div
-      style={{ padding: '40px', color: 'white' }}
-      initial={{ opacity: 0, x: 50 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -50 }}
-      transition={{ duration: 0.4 }}
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      style={{
+        minHeight: '100vh',
+        background: '#111',
+        color: 'white',
+        padding: '40px',
+      }}
     >
-      <Link to="/">← Back</Link>
+      <Link
+        to="/"
+        style={{
+          color: 'white',
+          textDecoration: 'none',
+          fontSize: '20px',
+        }}
+      >
+        Back
+      </Link>
 
-      <br />
-      <br />
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '50px',
+          marginTop: '50px',
+        }}
+      >
+        <motion.img
+          layoutId={`movie-${movie.id}`}
 
-      <img
-        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-        alt={movie.title}
-        width="300"
-      />
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
 
-      <h1>{movie.title}</h1>
+          alt={movie.title}
 
-      <p>
-        <strong>Rating:</strong> {movie.vote_average}
-      </p>
+          initial={{
+            position: 'fixed',
+            width: '350px',
+            top: '50%',
+            left: '50%',
+            x: '-50%',
+            y: '-50%',
+            scale: 2.5,
+          }}
 
-      <p>
-        <strong>Release Date:</strong> {movie.release_date}
-      </p>
+          animate={{
+            position: 'relative',
 
-      <p>{movie.overview}</p>
+            width: '350px',
+
+            top: 0,
+
+            left: 0,
+
+            x: 0,
+
+            y: 0,
+
+            scale: 1,
+          }}
+
+          transition={{
+            duration: 2,
+            times: [0, 0.3, 1],
+            ease: [0.22, 1, 0.36, 1],
+          }}
+
+          onAnimationComplete={() => {
+            setShowDetails(true);
+          }}
+
+          style={{
+            borderRadius: '20px',
+
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+          }}
+        />
+
+        {showDetails && (
+          <motion.div
+            initial={{
+              opacity: 0,
+              x: 100,
+            }}
+
+            animate={{
+              opacity: 1,
+              x: 0,
+            }}
+
+            transition={{
+              duration: 0.6,
+            }}
+
+            style={{
+              maxWidth: '600px',
+            }}
+          >
+            <h1>{movie.title}</h1>
+
+            <h2>Rating: {movie.vote_average}</h2>
+
+            <h3>Release Date: {movie.release_date}</h3>
+
+            <p
+              style={{
+                fontSize: '20px',
+                lineHeight: '1.6',
+              }}
+            >
+              {movie.overview}
+            </p>
+          </motion.div>
+        )}
+      </div>
     </motion.div>
   );
 }

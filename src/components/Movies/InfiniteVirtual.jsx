@@ -51,7 +51,7 @@ function InfiniteScrollPage() {
     }
 
     return (
-      <div style={{ ...style, padding: 10 }}>
+      <div style={{ ...style, padding: 10, placeItems: 'center' }}>
         <MovieCard
           id={movie.id}
           title={movie.title}
