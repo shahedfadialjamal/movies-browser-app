@@ -1,17 +1,20 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addFavorite, removeFavorite } from '../../redux/favoritesSlice';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useMemo } from 'react';
 
 function MovieCard({ id, title, type, poster }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const favorites = useSelector((state) => state.favorites.favorites) || [];
-  const favorite = favorites.some((movie) => movie && movie.id === id);
+  const favorite = useMemo(
+    () => favorites.some((movie) => movie && movie.id === id),
+    [favorites, id]
+  );
 
-  const handleFavorite = () => {
+  const handleFavorite = useCallback(() => {
     if (favorite) {
       dispatch(removeFavorite(id));
     } else {
@@ -24,11 +27,10 @@ function MovieCard({ id, title, type, poster }) {
         })
       );
     }
-  };
+  }, [favorite, id, title, type, poster]);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = useCallback((e) => {
     const card = e.currentTarget;
-
     const rect = card.getBoundingClientRect();
 
     const x = e.clientX - rect.left;
@@ -46,28 +48,26 @@ function MovieCard({ id, title, type, poster }) {
       rotateY(${rotateY}deg)
       scale(1.05)
     `;
-  };
+  }, []);
 
-  const handleMouseLeave = (e) => {
+  const handleMouseLeave = useCallback((e) => {
     e.currentTarget.style.transform = `
       perspective(1000px)
       rotateX(0deg)
       rotateY(0deg)
       scale(1)
     `;
-  };
+  }, []);
 
   return (
     <motion.div
       className="movie-card"
-
-      layoutIs={`movie-${id}`}
+      layoutId={`movie-${id}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
       <Link
         to={`/movie/${id}`}
-
         style={{
           textDecoration: 'none',
           color: 'inherit',
@@ -75,15 +75,12 @@ function MovieCard({ id, title, type, poster }) {
       >
         <img
           src={`https://image.tmdb.org/t/p/w500${poster}`}
-
           alt={title}
-
           width="180"
         />
 
         <div className="movie-info">
           <h3>{title}</h3>
-
           <p>{type}</p>
         </div>
       </Link>

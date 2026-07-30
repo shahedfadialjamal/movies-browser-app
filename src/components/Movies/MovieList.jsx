@@ -1,58 +1,21 @@
-import { use, useEffect, useState } from 'react';
-import { getPopularMovies, searchMovies } from '../../api';
+import { useState } from 'react';
 import MovieCard from './MovieCard';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { useDispatch, useSelector } from 'react-redux';
-import { setMovies } from '../../redux/movieSlice';
+import useFetchMovies from '../../hooks/useFetchMovies';
 import { useSearchParams } from 'react-router-dom';
 
 function MovieList({ query }) {
-  const dispatch = useDispatch();
-  const movies = useSelector((state) => state.movies.movies);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [sortorder, setSortOrder] = useState('default');
-
-  useEffect(() => {
-    setPage(1);
-  }, [sortorder]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [query]);
-
-  useEffect(() => {
-    setLoading(true);
-
-    const fetchMovies = query
-      ? searchMovies(query, page)
-      : getPopularMovies(page);
-
-    fetchMovies
-      .then((response) => {
-        dispatch(setMovies(response.data.results));
-        setTotalPages(response.data.total_pages);
-        setTotalResults(response.data.total_results);
-        setLoading(false);
-      })
-
-      .catch((error) => {
-        console.log(error);
-
-        setLoading(false);
-      });
-  }, [query, page]);
+  const [sortOrder, setSortOrder] = useState('default');
+  const { movies, loading, page, setPage, totalPages, totalResults } =
+    useFetchMovies(query);
 
   const sortedMovies = [...movies];
 
-  if (sortorder === 'high') {
+  if (sortOrder === 'high') {
     sortedMovies.sort((a, b) => b.vote_average - a.vote_average);
   }
 
-  if (sortorder === 'low') {
+  if (sortOrder === 'low') {
     sortedMovies.sort((a, b) => a.vote_average - b.vote_average);
   }
 
@@ -69,6 +32,13 @@ function MovieList({ query }) {
     );
   }
 
+  const changePage = (newPage) => {
+    setPage(newPage);
+    setSearchParams({
+      page: newPage,
+    });
+  };
+
   return (
     <>
       <h3
@@ -82,27 +52,26 @@ function MovieList({ query }) {
       <div
         style={{
           textAlign: 'center',
-          marginBottom: '2px',
+          marginBottom: '10px',
         }}
       >
         <select
-          value={sortorder}
+          value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
         >
           <option value="default">Default</option>
+
           <option value="high">Highest Rating</option>
-          <option value="low">Low Rating</option>
+
+          <option value="low">Lowest Rating</option>
         </select>
       </div>
 
       <div
         style={{
           display: 'grid',
-
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px ,1fr))',
-
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px,1fr))',
           gap: '24px',
-
           padding: '24px',
           placeItems: 'center',
         }}
@@ -113,7 +82,7 @@ function MovieList({ query }) {
             id={movie.id}
             movie={movie}
             title={movie.title}
-            tybe={movie.release_date}
+            type={movie.release_date}
             poster={movie.poster_path}
           />
         ))}
@@ -125,17 +94,7 @@ function MovieList({ query }) {
           margin: '20px',
         }}
       >
-        <button
-          onClick={() => {
-            const newPage = page - 1;
-
-            setPage(newPage);
-
-            setSearchParams({
-              page: newPage,
-            });
-          }}
-        >
+        <button disabled={page === 1} onClick={() => changePage(page - 1)}>
           Previous
         </button>
 
@@ -148,15 +107,8 @@ function MovieList({ query }) {
         </span>
 
         <button
-          onClick={() => {
-            const newPage = page + 1;
-
-            setPage(newPage);
-
-            setSearchParams({
-              page: newPage,
-            });
-          }}
+          disabled={page === totalPages}
+          onClick={() => changePage(page + 1)}
         >
           Next
         </button>

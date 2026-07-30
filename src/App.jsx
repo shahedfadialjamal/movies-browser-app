@@ -9,6 +9,7 @@ import MovieDetail from './components/Movies/MovieDetail.jsx';
 import InfiniteScrollPage from './components/Movies/InfiniteScroll.jsx';
 import ErrorBoundary from './components/Error/ErrorBoundary.jsx';
 import InfiniteVirtual from './components/Movies/InfiniteVirtual.jsx';
+import MyCalendar from './components/Calender.jsx';
 
 function App() {
   const [query, setQuery] = useState('');
@@ -24,6 +25,8 @@ function App() {
           <Link to="/favorites">Favorites</Link>
           <Link to="/infinite">Infinite Scroll</Link>
           <Link to="/virtual">Virtualization</Link>
+
+          <MyCalendar />
         </nav>
       </header>
 
@@ -37,18 +40,14 @@ function App() {
               element={
                 <>
                   <section className="hero"></section>
-
                   <MovieList query={query} />
                 </>
               }
             />
 
             <Route path="/favorites" element={<Favorites />} />
-
             <Route path="/movie/:movieId" element={<MovieDetail />} />
-
             <Route path="/infinite" element={<InfiniteScrollPage />} />
-
             <Route path="/virtual" element={<InfiniteVirtual />} />
           </Routes>
         </AnimatePresence>
