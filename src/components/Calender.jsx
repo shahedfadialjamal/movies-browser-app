@@ -1,22 +1,25 @@
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 
-function MyCalendar() {
+function MyCalendar({ setSelectedDate }) {
   const [show, setShow] = useState(false);
   const [date, setDate] = useState(new Date());
 
+  function changeDate(newDate) {
+    setDate(newDate);
+
+    const formattedDate = newDate.toISOString().split('T')[0];
+
+    setSelectedDate(formattedDate);
+  }
+
   return (
     <div className="calendar-tab">
-      <button
-        className={show ? 'calendar-active' : ''}
-        onClick={() => setShow(!show)}
-      >
-        Calendar
-      </button>
+      <button onClick={() => setShow(!show)}>Calendar</button>
 
       {show && (
         <div className="calendar-popup">
-          <Calendar onChange={setDate} value={date} />
+          <Calendar value={date} onChange={changeDate} />
         </div>
       )}
     </div>

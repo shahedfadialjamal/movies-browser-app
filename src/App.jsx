@@ -13,6 +13,9 @@ import MyCalendar from './components/Calender.jsx';
 
 function App() {
   const [query, setQuery] = useState('');
+
+  const [selectedDate, setSelectedDate] = useState(null);
+
   const location = useLocation();
 
   return (
@@ -22,11 +25,14 @@ function App() {
 
         <nav>
           <Link to="/">Home</Link>
+
           <Link to="/favorites">Favorites</Link>
+
           <Link to="/infinite">Infinite Scroll</Link>
+
           <Link to="/virtual">Virtualization</Link>
 
-          <MyCalendar />
+          <MyCalendar setSelectedDate={setSelectedDate} />
         </nav>
       </header>
 
@@ -40,14 +46,18 @@ function App() {
               element={
                 <>
                   <section className="hero"></section>
-                  <MovieList query={query} />
+
+                  <MovieList query={query} selectedDate={selectedDate} />
                 </>
               }
             />
 
             <Route path="/favorites" element={<Favorites />} />
+
             <Route path="/movie/:movieId" element={<MovieDetail />} />
+
             <Route path="/infinite" element={<InfiniteScrollPage />} />
+
             <Route path="/virtual" element={<InfiniteVirtual />} />
           </Routes>
         </AnimatePresence>

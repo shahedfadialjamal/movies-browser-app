@@ -3,13 +3,24 @@ import MovieCard from './MovieCard';
 import useFetchMovies from '../../hooks/useFetchMovies';
 import { useSearchParams } from 'react-router-dom';
 
-function MovieList({ query }) {
+function MovieList({ query, selectedDate }) {
   const [searchParams, setSearchParams] = useSearchParams();
+
   const [sortOrder, setSortOrder] = useState('default');
+
   const { movies, loading, page, setPage, totalPages, totalResults } =
     useFetchMovies(query);
 
-  const sortedMovies = [...movies];
+  // Filter movies by selected calendar date
+  const filteredMovies = selectedDate
+    ? movies.filter((movie) => {
+        if (!movie.release_date) return false;
+
+        return movie.release_date === selectedDate;
+      })
+    : movies;
+
+  const sortedMovies = [...filteredMovies];
 
   if (sortOrder === 'high') {
     sortedMovies.sort((a, b) => b.vote_average - a.vote_average);
@@ -34,6 +45,7 @@ function MovieList({ query }) {
 
   const changePage = (newPage) => {
     setPage(newPage);
+
     setSearchParams({
       page: newPage,
     });
@@ -46,7 +58,9 @@ function MovieList({ query }) {
           textAlign: 'center',
         }}
       >
-        Total Results: {totalResults}
+        {selectedDate
+          ? `Movies on ${selectedDate}: ${sortedMovies.length}`
+          : `Total Results: ${totalResults}`}
       </h3>
 
       <div
@@ -76,43 +90,54 @@ function MovieList({ query }) {
           placeItems: 'center',
         }}
       >
-        {sortedMovies.map((movie) => (
-          <MovieCard
-            key={movie.id}
-            id={movie.id}
-            movie={movie}
-            title={movie.title}
-            type={movie.release_date}
-            poster={movie.poster_path}
-          />
-        ))}
+        {sortedMovies.length > 0 ? (
+          sortedMovies.map((movie) => (
+            <MovieCard
+              key={movie.id}
+
+              id={movie.id}
+
+              movie={movie}
+
+              title={movie.title}
+
+              type={movie.release_date}
+
+              poster={movie.poster_path}
+            />
+          ))
+        ) : (
+          <h2>No movies found for this date</h2>
+        )}
       </div>
 
-      <div
-        style={{
-          textAlign: 'center',
-          margin: '20px',
-        }}
-      >
-        <button disabled={page === 1} onClick={() => changePage(page - 1)}>
-          Previous
-        </button>
-
-        <span
+      {!selectedDate && (
+        <div
           style={{
-            margin: '0 20px',
+            textAlign: 'center',
+            margin: '20px',
           }}
         >
-          Page {page} of {totalPages}
-        </span>
+          <button disabled={page === 1} onClick={() => changePage(page - 1)}>
+            Previous
+          </button>
 
-        <button
-          disabled={page === totalPages}
-          onClick={() => changePage(page + 1)}
-        >
-          Next
-        </button>
-      </div>
+          <span
+            style={{
+              margin: '0 20px',
+            }}
+          >
+            Page {page} of {totalPages}
+          </span>
+
+          <button
+            disabled={page === totalPages}
+            onClick={() => changePage(page + 1)}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </>
   );
 }
