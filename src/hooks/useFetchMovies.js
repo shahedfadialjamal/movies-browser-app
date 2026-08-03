@@ -1,66 +1,40 @@
 import { useEffect, useState } from 'react';
-import { getPopularMovies, searchMovies } from '../api';
+import { getPopularMovies, searchMovies, getMoviesByDate } from '../api';
 
-function useFetchMovies(query, infinite = false) {
+function useFetchMovies(query, selectedDate) {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
 
-  const fetchMovies = async (currentPage = page) => {
-    if (loading) return;
+  useEffect(() => {
+    const fetchMovies = async () => {
+      setLoading(true);
 
-    setLoading(true);
+      try {
+        let response;
 
-    try {
-      const response = query
-        ? await searchMovies(query, currentPage)
-        : await getPopularMovies(currentPage);
+        if (selectedDate) {
+          response = await getMoviesByDate(selectedDate, page);
+        } else if (query) {
+          response = await searchMovies(query, page);
+        } else {
+          response = await getPopularMovies(page);
+        }
 
-      const { results, total_pages, total_results } = response.data;
-
-      setTotalPages(total_pages);
-      setTotalResults(total_results);
-
-      if (infinite) {
-        setMovies((prev) => [...prev, ...results]);
-        setHasMore(currentPage < total_pages);
-      } else {
-        setMovies(results);
+        setMovies(response.data.results);
+        setTotalPages(response.data.total_pages);
+        setTotalResults(response.data.total_results);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      setMovies([]);
-      setPage(1);
-      setHasMore(true);
     };
-  }, []);
 
-  useEffect(() => {
-    if (infinite) {
-      fetchMovies(page);
-    }
-  }, [page]);
-
-  useEffect(() => {
-    if (!infinite) {
-      fetchMovies(page);
-    }
-  }, [query, page]);
-
-  const fetchMoreMovies = () => {
-    if (!hasMore || loading) return;
-    setPage((prev) => prev + 1);
-  };
+    fetchMovies();
+  }, [query, selectedDate, page]);
 
   return {
     movies,
@@ -69,8 +43,6 @@ function useFetchMovies(query, infinite = false) {
     setPage,
     totalPages,
     totalResults,
-    hasMore,
-    fetchMoreMovies,
   };
 }
 

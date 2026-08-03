@@ -2,8 +2,9 @@ import { useState } from 'react';
 import MovieCard from './MovieCard';
 import useFetchMovies from '../../hooks/useFetchMovies';
 import { useSearchParams } from 'react-router-dom';
+import MyCalendar from '../Calender.jsx';
 
-function MovieList({ query, selectedDate }) {
+function MovieList({ query, fromDate, toDate, setFromDate, setToDate }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [sortOrder, setSortOrder] = useState('default');
@@ -11,14 +12,23 @@ function MovieList({ query, selectedDate }) {
   const { movies, loading, page, setPage, totalPages, totalResults } =
     useFetchMovies(query);
 
-  // Filter movies by selected calendar date
-  const filteredMovies = selectedDate
-    ? movies.filter((movie) => {
+  const invalidDateRange = fromDate && toDate && fromDate > toDate;
+
+  const filteredMovies = invalidDateRange
+    ? []
+    : movies.filter((movie) => {
         if (!movie.release_date) return false;
 
-        return movie.release_date === selectedDate;
-      })
-    : movies;
+        if (fromDate && movie.release_date < fromDate) {
+          return false;
+        }
+
+        if (toDate && movie.release_date > toDate) {
+          return false;
+        }
+
+        return true;
+      });
 
   const sortedMovies = [...filteredMovies];
 
@@ -53,24 +63,26 @@ function MovieList({ query, selectedDate }) {
 
   return (
     <>
-      <h3
-        style={{
-          textAlign: 'center',
-        }}
-      >
-        {selectedDate
-          ? `Movies on ${selectedDate}: ${sortedMovies.length}`
+      <h3 style={{ textAlign: 'center' }}>
+        {fromDate || toDate
+          ? `Movies found: ${sortedMovies.length}`
           : `Total Results: ${totalResults}`}
       </h3>
 
       <div
         style={{
           textAlign: 'center',
-          marginBottom: '10px',
+
+          marginBottom: '20px',
+
+          position: 'relative',
+
+          zIndex: 10,
         }}
       >
         <select
           value={sortOrder}
+
           onChange={(e) => setSortOrder(e.target.value)}
         >
           <option value="default">Default</option>
@@ -79,14 +91,42 @@ function MovieList({ query, selectedDate }) {
 
           <option value="low">Lowest Rating</option>
         </select>
+
+        <MyCalendar
+          fromDate={fromDate}
+
+          toDate={toDate}
+
+          setFromDate={setFromDate}
+
+          setToDate={setToDate}
+        />
+
+        {invalidDateRange && (
+          <p
+            style={{
+              color: 'red',
+
+              fontWeight: 'bold',
+
+              marginTop: '10px',
+            }}
+          >
+            From date must be smaller than To date
+          </p>
+        )}
       </div>
 
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px,1fr))',
+
+          gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
+
           gap: '24px',
+
           padding: '24px',
+
           placeItems: 'center',
         }}
       >
@@ -107,18 +147,23 @@ function MovieList({ query, selectedDate }) {
             />
           ))
         ) : (
-          <h2>No movies found for this date</h2>
+          <h2>No movies found</h2>
         )}
       </div>
 
-      {!selectedDate && (
+      {!fromDate && !toDate && (
         <div
           style={{
             textAlign: 'center',
+
             margin: '20px',
           }}
         >
-          <button disabled={page === 1} onClick={() => changePage(page - 1)}>
+          <button
+            disabled={page === 1}
+
+            onClick={() => changePage(page - 1)}
+          >
             Previous
           </button>
 
@@ -132,6 +177,7 @@ function MovieList({ query, selectedDate }) {
 
           <button
             disabled={page === totalPages}
+
             onClick={() => changePage(page + 1)}
           >
             Next

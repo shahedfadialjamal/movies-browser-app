@@ -8,13 +8,15 @@ import Favorites from './components/Favorites/Favorites.jsx';
 import MovieDetail from './components/Movies/MovieDetail.jsx';
 import InfiniteScrollPage from './components/Movies/InfiniteScroll.jsx';
 import ErrorBoundary from './components/Error/ErrorBoundary.jsx';
-import InfiniteVirtual from './components/Movies/InfiniteVirtual.jsx';
-import MyCalendar from './components/Calender.jsx';
+import UserForm from './components/User/UserForm.jsx';
 
 function App() {
   const [query, setQuery] = useState('');
 
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+
+  const [showUser, setShowUser] = useState(false);
 
   const location = useLocation();
 
@@ -32,8 +34,12 @@ function App() {
 
           <Link to="/virtual">Virtualization</Link>
 
-          <MyCalendar setSelectedDate={setSelectedDate} />
+          <button className="user-icon" onClick={() => setShowUser(!showUser)}>
+            👤
+          </button>
         </nav>
+
+        {showUser && <UserForm />}
       </header>
 
       <SearchForm onSearch={setQuery} />
@@ -47,7 +53,17 @@ function App() {
                 <>
                   <section className="hero"></section>
 
-                  <MovieList query={query} selectedDate={selectedDate} />
+                  <MovieList
+                    query={query}
+
+                    fromDate={fromDate}
+
+                    toDate={toDate}
+
+                    setFromDate={setFromDate}
+
+                    setToDate={setToDate}
+                  />
                 </>
               }
             />
@@ -57,8 +73,6 @@ function App() {
             <Route path="/movie/:movieId" element={<MovieDetail />} />
 
             <Route path="/infinite" element={<InfiniteScrollPage />} />
-
-            <Route path="/virtual" element={<InfiniteVirtual />} />
           </Routes>
         </AnimatePresence>
       </ErrorBoundary>
