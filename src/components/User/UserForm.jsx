@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useToast } from '../../context/ToastContext';
 
 const userSchema = z
   .object({
@@ -32,13 +33,12 @@ const userSchema = z
 
     confirmPassword: z.string(),
   })
-
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
-
 export default function UserForm() {
+  const { showToast } = useToast();
   const {
     register,
     handleSubmit,
@@ -50,12 +50,20 @@ export default function UserForm() {
   function submit(data) {
     console.log(data);
 
-    alert('User created successfully');
+    showToast('success', 'Success', 'User created successfully!');
+  }
+
+  function submitError(errors) {
+    console.log('FORM ERRORS:', errors);
+
+    const firstError = Object.values(errors)[0];
+
+    showToast('error', 'Error', firstError?.message || 'Form is invalid');
   }
 
   return (
     <div className="user-form">
-      <form onSubmit={handleSubmit(submit)}>
+      <form onSubmit={handleSubmit(submit, submitError)}>
         <div className="form-group">
           <input
             placeholder="First Name"

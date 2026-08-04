@@ -2,6 +2,8 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
+import { ToastProvider } from './context/ToastContext';
+
 import MovieList from './components/Movies/MovieList.jsx';
 import SearchForm from './components/Search/SearchForm.jsx';
 import Favorites from './components/Favorites/Favorites.jsx';
@@ -21,62 +23,63 @@ function App() {
   const location = useLocation();
 
   return (
-    <div className="app-container">
-      <header className="navbar">
-        <h1>Movie Browser</h1>
+    <ToastProvider>
+      <div className="app-container">
+        <header className="navbar">
+          <h1>Movie Browser</h1>
 
-        <nav>
-          <Link to="/">Home</Link>
+          <nav>
+            <Link to="/">Home</Link>
 
-          <Link to="/favorites">Favorites</Link>
+            <Link to="/favorites">Favorites</Link>
 
-          <Link to="/infinite">Infinite Scroll</Link>
+            <Link to="/infinite">Infinite Scroll</Link>
 
-          <Link to="/virtual">Virtualization</Link>
+            <Link to="/virtual">Virtualization</Link>
 
-          <button className="user-icon" onClick={() => setShowUser(!showUser)}>
-            👤
-          </button>
-        </nav>
+            <button
+              className="user-icon"
+              onClick={() => setShowUser(!showUser)}
+            >
+              👤
+            </button>
+          </nav>
 
-        {showUser && <UserForm />}
-      </header>
+          {showUser && <UserForm />}
+        </header>
 
-      <SearchForm onSearch={setQuery} />
+        <SearchForm onSearch={setQuery} />
 
-      <ErrorBoundary>
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route
-              path="/"
-              element={
-                <>
-                  <section className="hero"></section>
+        <ErrorBoundary>
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <section className="hero"></section>
 
-                  <MovieList
-                    query={query}
+                    <MovieList
+                      query={query}
+                      fromDate={fromDate}
+                      toDate={toDate}
+                      setFromDate={setFromDate}
+                      setToDate={setToDate}
+                    />
+                  </>
+                }
+              />
 
-                    fromDate={fromDate}
+              <Route path="/favorites" element={<Favorites />} />
 
-                    toDate={toDate}
+              <Route path="/movie/:movieId" element={<MovieDetail />} />
 
-                    setFromDate={setFromDate}
-
-                    setToDate={setToDate}
-                  />
-                </>
-              }
-            />
-
-            <Route path="/favorites" element={<Favorites />} />
-
-            <Route path="/movie/:movieId" element={<MovieDetail />} />
-
-            <Route path="/infinite" element={<InfiniteScrollPage />} />
-          </Routes>
-        </AnimatePresence>
-      </ErrorBoundary>
-    </div>
+              <Route path="/infinite" element={<InfiniteScrollPage />} />
+            </Routes>
+          </AnimatePresence>
+        </ErrorBoundary>
+      </div>
+    </ToastProvider>
   );
 }
 
