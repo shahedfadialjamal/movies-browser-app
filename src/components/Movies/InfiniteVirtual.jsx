@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+imimport { useEffect, useState } from 'react';
 import { FixedSizeGrid as Grid } from 'react-window';
 import { getPopularMovies } from '../../api';
 import MovieCard from './MovieCard';
@@ -22,7 +22,10 @@ function InfiniteScrollPage() {
     try {
       const response = await getPopularMovies(page);
 
-      setMovies((prev) => [...prev, ...response.data.results]);
+      setMovies((prev) => [
+        ...prev,
+        ...response.data.results
+      ]);
 
       setTotalPages(response.data.total_pages);
 
@@ -31,6 +34,7 @@ function InfiniteScrollPage() {
       } else {
         setPage((prev) => prev + 1);
       }
+
     } catch (err) {
       console.error('Error fetching movies:', err);
     } finally {
@@ -51,7 +55,13 @@ function InfiniteScrollPage() {
     }
 
     return (
-      <div style={{ ...style, padding: 10, placeItems: 'center' }}>
+      <div
+        style={{
+          ...style,
+          padding: 10,
+          placeItems: 'center'
+        }}
+      >
         <MovieCard
           id={movie.id}
           title={movie.title}
@@ -62,7 +72,9 @@ function InfiniteScrollPage() {
     );
   };
 
-  const rowCount = Math.ceil(movies.length / COLUMN_COUNT);
+  const rowCount = Math.ceil(
+    movies.length / COLUMN_COUNT
+  );
 
   return (
     <Grid
@@ -72,9 +84,12 @@ function InfiniteScrollPage() {
       rowHeight={ROW_HEIGHT}
       width={COLUMN_WIDTH * COLUMN_COUNT}
       height={700}
-
       onItemsRendered={({ visibleRowStopIndex }) => {
-        if (hasMore && !loading && visibleRowStopIndex >= rowCount - 2) {
+        if (
+          hasMore &&
+          !loading &&
+          visibleRowStopIndex >= rowCount - 2
+        ) {
           console.log('Loading page:', page);
           fetchMovies();
         }

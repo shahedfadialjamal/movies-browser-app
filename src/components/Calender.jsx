@@ -56,7 +56,6 @@ function MyCalendar({ fromDate, toDate, setFromDate, setToDate }) {
       >
         {toDate ? toDate : 'To'}
       </button>
-
       {showCalendar && (
         <div
           style={{

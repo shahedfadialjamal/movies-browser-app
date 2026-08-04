@@ -1,7 +1,6 @@
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-
 import { ToastProvider } from './context/ToastContext';
 
 import MovieList from './components/Movies/MovieList.jsx';

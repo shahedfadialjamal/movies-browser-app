@@ -30,7 +30,6 @@ const userSchema = z
       .regex(/[A-Z]/, 'Need one capital letter')
       .regex(/[a-z]/, 'Need one small letter')
       .regex(/[^A-Za-z0-9]/, 'Need one special character'),
-
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -50,7 +49,11 @@ export default function UserForm() {
   function submit(data) {
     console.log(data);
 
-    showToast('success', 'Success', 'User created successfully!');
+    showToast({
+      type: 'success',
+      title: 'Success',
+      description: 'User created successfully!',
+    });
   }
 
   function submitError(errors) {
@@ -58,7 +61,11 @@ export default function UserForm() {
 
     const firstError = Object.values(errors)[0];
 
-    showToast('error', 'Error', firstError?.message || 'Form is invalid');
+    showToast({
+      type: 'error',
+      title: 'Error',
+      description: firstError?.message || 'Form is invalid',
+    });
   }
 
   return (
@@ -111,7 +118,6 @@ export default function UserForm() {
             {...register('password')}
             className={errors.password ? 'error' : ''}
           />
-
           <p>{errors.password?.message}</p>
         </div>
 
