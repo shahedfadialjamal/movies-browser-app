@@ -1,3 +1,4 @@
+import React from 'react';
 import { createContext, useContext, useState } from 'react';
 
 const ToastContext = createContext();
@@ -34,12 +35,14 @@ export function ToastProvider({ children }) {
       <div className="toast-container">
         {toasts.map((toast) => (
           <div key={toast.id} className={`toast ${toast.type}`}>
-            <div className="toast-content">
-              <h4>{toast.title}</h4>
+            <div>
+              <strong>{toast.title}</strong>
               <p>{toast.description}</p>
             </div>
 
-            <button onClick={() => closeToast(toast.id)}>✕</button>
+            <button type="button" onClick={() => closeToast(toast.id)}>
+              ✕
+            </button>
           </div>
         ))}
       </div>

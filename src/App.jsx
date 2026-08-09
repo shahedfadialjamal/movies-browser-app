@@ -1,6 +1,9 @@
+import React from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
+
 import { AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+
 import { ToastProvider } from './context/ToastContext';
 
 import MovieList from './components/Movies/MovieList.jsx';
@@ -10,6 +13,9 @@ import MovieDetail from './components/Movies/MovieDetail.jsx';
 import InfiniteScrollPage from './components/Movies/InfiniteScroll.jsx';
 import ErrorBoundary from './components/Error/ErrorBoundary.jsx';
 import UserForm from './components/User/UserForm.jsx';
+
+import FormBuilder from './components/FormBuilder/FormBuilder.jsx';
+import Form from './components/Form/Form.jsx';
 
 function App() {
   const [query, setQuery] = useState('');
@@ -23,8 +29,8 @@ function App() {
 
   return (
     <ToastProvider>
-      <div className="app-container">
-        <header className="navbar">
+      <div className="app">
+        <header>
           <h1>Movie Browser</h1>
 
           <nav>
@@ -35,6 +41,10 @@ function App() {
             <Link to="/infinite">Infinite Scroll</Link>
 
             <Link to="/virtual">Virtualization</Link>
+
+            <Link to="/form-builder">Form Builder</Link>
+
+            <Link to="/form">Form</Link>
 
             <button
               className="user-icon"
@@ -74,6 +84,10 @@ function App() {
               <Route path="/movie/:movieId" element={<MovieDetail />} />
 
               <Route path="/infinite" element={<InfiniteScrollPage />} />
+
+              <Route path="/form-builder" element={<FormBuilder />} />
+
+              <Route path="/form" element={<Form />} />
             </Routes>
           </AnimatePresence>
         </ErrorBoundary>

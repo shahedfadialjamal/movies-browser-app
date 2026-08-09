@@ -1,3 +1,4 @@
+import React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieCard from './MovieCard';
 import useFetchMovies from '../../hooks/useFetchMovies';
