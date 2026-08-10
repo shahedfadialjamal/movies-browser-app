@@ -78,24 +78,19 @@ function Form() {
   return (
     <div className="form-page">
       <div className="form-container">
-        {/* FORM TITLE */}
         <h1 className="form-title">{form.title}</h1>
 
         <p className="form-description">Please fill out the form below.</p>
 
         <form onSubmit={handleSubmit}>
-          {/* EACH BUILDER FIELD IS ITS OWN ROW */}
           <div className="form-fields">
             {form.fields.map((field) => (
               <div className="user-form-field" key={field.id}>
-                {/* FIELD LABEL */}
                 <label className="field-label">
                   {field.label}
 
                   {field.required && <span className="required"> *</span>}
                 </label>
-
-                {/* TEXT */}
                 {field.type === 'text' && (
                   <input
                     className="form-input"
@@ -107,7 +102,6 @@ function Form() {
                   />
                 )}
 
-                {/* LONG TEXT */}
                 {field.type === 'textarea' && (
                   <textarea
                     className="form-input form-textarea"
@@ -266,7 +260,6 @@ function Form() {
                     })}
                   </div>
                 )}
-
                 {field.type === 'yesno' && (
                   <select
                     className="form-input"

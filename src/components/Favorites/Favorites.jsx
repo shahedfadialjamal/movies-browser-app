@@ -1,3 +1,4 @@
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { getFavorites } from '../../favorites';
 import MovieCard from '../Movies/MovieCard';
